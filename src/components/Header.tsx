@@ -21,7 +21,7 @@ export function Header() {
           Produtos
         </button>
       </div>
-      <div className="flex gap-2 items-center gap-4">
+      <div className="flex items-center gap-4">
         <button className="bg-[#F24D0D] text-white h-[40px] rounded-[10px] flex items-center gap-4 p-3 font-poppins font-medium text-sm">
           <Image src={plusIcon} alt=""width={20} />
           Novo produto
