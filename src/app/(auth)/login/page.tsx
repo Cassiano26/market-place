@@ -10,7 +10,7 @@ export default function LoginPage() {
     <div className="px-20 py-16 bg-white rounded-[32px] flex flex-col gap-12">
       <div>
         <h1 className="font-sans font-bold text-2xl/[120%] text-[#1D1D1D] ">Acesse sua conta</h1>
-        <p className="font-poppins font-normal text-sm/[120%] text-[#666666]">
+        <p className="font-poppins font-normal text-sm/[120%] text-[#666666] mt-2">
           informe seu e-mail  e senha  para entrar
         </p>
       </div>
@@ -35,12 +35,11 @@ export default function LoginPage() {
       </form>
       <div className="flex flex-col gap-5 mt-12">
         <p className="text-[#666666] font-poppins text-base font-normal">Ainda não tem uma conta?</p>
-        <button className="flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base" type="submit">
+        <button className="flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base">
           Cadastrar
           <Image className="" alt='' src={arrowRightRed} width={24} height={24} />
         </button>
       </div>
-
     </div>
   )
 }
