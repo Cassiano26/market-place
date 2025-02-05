@@ -45,7 +45,7 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-10">
         <div>
           <h1 className="font-sans font-bold text-2xl text-[#1D1D1D]">Últimos 30 dias</h1>
-          <p className="font-poppins font-normal text-base text-[#666666] mt-2">Confira as estatísticas da sua loja no último mês</p>
+          <p className="font-poppins font-normal text-[14px] text-[#666666] mt-2">Confira as estatísticas da sua loja no último mês</p>
         </div>
         <div className="flex gap-6">
           <div className="flex flex-col gap-[15px]">
