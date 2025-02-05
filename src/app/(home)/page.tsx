@@ -1,53 +1,41 @@
 'use client'
 import Image from "next/image"
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts'
 
 import saleTagIcon from '@/assets/icon/sale-tag-02.svg'
 import storeIcon from '@/assets/icon/store-04.svg'
 import multipleUserIcon from '@/assets/icon/user-multiple.svg'
+import calendarIcon from '@/assets/icon/calendar-04.svg'
+import CustomTooltip from "@/components/CustomTooltip"
 
 const data = [
   {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
+    name: '26',
+    uv: 40,
   },
   {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
+    name: '27',
+    uv: 30,
   },
   {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
+    name: '28',
+    uv: 20,
   },
   {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
+    name: '29',
+    uv: 150,
   },
   {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
+    name: '30',
+    uv: 119,
   },
   {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
+    name: '31',
+    uv: 23,
   },
   {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
+    name: '01',
+    uv: 150,
   },
 ]
 
@@ -98,28 +86,30 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <div className="bg-white w-[767px] h-[360px] rounded-[20px]">
-            <div>
-              <h4></h4>
-              <h4></h4>
+          <div className="flex flex-col gap-[28px] bg-white w-[767px] h-[360px] rounded-[20px] px-6 py-5">
+            <div className="flex justify-between">
+              <h4 className="font-sans font-bold text-[18px] text-[#1D1D1D]">Visitantes</h4>
+              <h4 className="flex gap-2 items-center font-poppins font-normal text-[12px] text-[#666666] uppercase">
+                <Image src={calendarIcon} alt="calendar icon" width={16} height={16}/>
+                26 de junho - 25 de julho
+              </h4>
             </div>
-            <div className="w-[700px] h-[266px]">
+            <div className="w-[719px] h-[266px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                  width={719}
-                  height={266}
                   data={data}
                   margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
+                    top: 10,
+                    right: 10,
+                    left: -10,
+                    bottom: 0,
                   }}
                 >
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+                  <Tooltip cursor={{ stroke: "none" }} content={<CustomTooltip />}/>
+                  <CartesianGrid strokeDasharray="8" vertical={false} horizontalValues={[0, 50, 100, 150]}/>
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} padding={{left: 36}}/>
+                  <YAxis axisLine={false} tickLine={false} padding={{bottom: 40}} allowDecimals={false} ticks={[0, 50, 100, 150]} />
+                  <Line type="monotone" dataKey="uv" stroke="#009CF0" dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
