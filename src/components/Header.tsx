@@ -1,6 +1,6 @@
 import Image from "next/image"
 import logoIcon from '@/assets/LogoSmall.svg'
-import profileImage from '@/assets/Image.png'
+import profileImage from '@/assets/ImageProfile.png'
 import chartIcon from '@/assets/icon/chart-histogram.svg'
 import packageIcon from '@/assets/icon/package.svg'
 import plusIcon from '@/assets/icon/plus-sign.svg'
