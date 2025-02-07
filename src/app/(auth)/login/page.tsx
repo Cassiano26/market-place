@@ -9,15 +9,16 @@ import viewOffIcon from '@/assets/icon/view-off.svg'
 import MailIcon from "@/components/icons/MailIcon"
 import AccessIcon from "@/components/icons/accessIcon"
 import ArrowRightIcon from "@/components/icons/arrowRightIcon"
+import { useRouter } from "next/navigation"
 
 
 export default function LoginPage() {
+  const router = useRouter()
+
   const [visible, setVisible] = useState(false)
 
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/
@@ -44,16 +45,16 @@ export default function LoginPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    setApiError(null)
 
     const response = validate()
     if (Object.keys(response).length > 0) {
       setErrors(response)
+
       return
     } 
       
     setErrors({})
-    setApiError("")
-    setSubmitted(false)
 
     try {
       const response = await fetch("http://localhost:3333/sellers/sessions", {
@@ -68,12 +69,16 @@ export default function LoginPage() {
 
       const data = await response.json()
       console.log("Login Success:", data)
-      setSubmitted(true)
+
+      router.push("/")
+
     } catch (error: unknown) {
         setApiError(error instanceof Error ? error.message : "An error occurred during login.")
-    } finally {
-        setLoading(false)
     }
+  }
+
+  function handleRegisterClick() {
+    router.push("/register")
   }
 
   return (
@@ -91,8 +96,9 @@ export default function LoginPage() {
           <div className="flex flex-row gap-1 border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
             <MailIcon color="949494" width={22} height={22}/>
             {/* <Image className="color-" alt='' src={mailIcon} width={22} height={19} /> */}
-            <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="email" name="email" id="email" placeholder="Seu e-mail cadastrado" />
+            <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" name="email" id="email" placeholder="Seu e-mail cadastrado" />
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.email}</span>
         </div>
 
         <div className="group">
@@ -106,16 +112,18 @@ export default function LoginPage() {
               {visible ? <Image alt='' src={viewIcon} width={22} height={19} /> : <Image alt='' src={viewOffIcon} width={22} height={19} /> }
             </button>
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.password}</span>
         </div>
-
-        <button className="hover:bg-[#C43C08] flex justify-between px-5 items-center mt-12 mb-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
+        <button className="hover:bg-[#C43C08] flex justify-between px-5 items-center mt-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
           Acessar
           <ArrowRightIcon color="white" />
         </button>
+        <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{apiError}</span>
       </form>
+
       <div className="flex flex-col gap-5 mt-12">
         <p className="text-[#666666] font-poppins text-base font-normal">Ainda não tem uma conta?</p>
-        <button className="group hover:text-[#C43C08] hover:border-[#C43C08] flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base">
+        <button onClick={handleRegisterClick} className="group hover:text-[#C43C08] hover:border-[#C43C08] flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base">
           Cadastrar
           <ArrowRightIcon color='#F24D0D' />
         </button>
