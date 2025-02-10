@@ -68,7 +68,8 @@ export default function LoginPage() {
       }
 
       const data = await response.json()
-      console.log("Login Success:", data)
+
+      document.cookie = `market-place@token=${data.accessToken}; path=/; max-age=86400`
 
       router.push("/")
 
