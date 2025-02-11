@@ -3,7 +3,6 @@
 import Image from "next/image"
 import uploadIcon from '@/assets/icon/image-upload.svg'
 
-import arrowRightRed from '@/assets/icon/arrow-right-02-red.svg'
 import viewIcon from '@/assets/icon/view.svg'
 import viewOffIcon from '@/assets/icon/view-off.svg'
 
@@ -144,6 +143,10 @@ export default function RegisterPage() {
     }
   }
 
+  function handleBackToLoginClick() {
+    router.push("/login")
+  }
+
   return (
     <div className="px-20 py-16 bg-white rounded-[32px] flex flex-col gap-12">
       <div>
@@ -220,7 +223,7 @@ export default function RegisterPage() {
           <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.passwordConfirmation}</span>
         </div>
 
-        <button className="flex justify-between px-5 items-center mt-12 mb-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
+        <button className="hover:bg-[#C43C08] flex justify-between px-5 items-center mt-12 mb-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
           Cadastrar
           <ArrowRightIcon color="white" />
         </button>
@@ -230,9 +233,9 @@ export default function RegisterPage() {
 
       <div className="flex flex-col gap-5 mt-12">
         <p className="text-[#666666] font-poppins text-base font-normal">Já tem uma conta?</p>
-        <button className="flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base" >
+        <button onClick={handleBackToLoginClick} className="group hover:text-[#C43C08] hover:border-[#C43C08] flex justify-between px-5 items-center border border-[#F24D0D] rounded-xl h-14 text-[#F24D0D] font-poppins font-medium text-base" >
           Acessar
-          <Image className="" alt='' src={arrowRightRed} width={24} height={24} />
+          <ArrowRightIcon color='#F24D0D' />
         </button>
       </div>
     </div>

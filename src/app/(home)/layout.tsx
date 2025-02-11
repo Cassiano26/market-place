@@ -8,7 +8,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
 
   const emailCookie = document.cookie
   .split("; ")
-  .find((cookie) => cookie.startsWith("market-place@email"))
+  .find((cookie) => cookie.startsWith("auth"))
   ?.split("=")[1]
 
   if(!emailCookie) {

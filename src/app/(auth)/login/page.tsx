@@ -72,7 +72,7 @@ export default function LoginPage() {
 
       const data = await response.json()
 
-      document.cookie = `market-place@token=${data.accessToken}; path=/; max-age=86400`
+      document.cookie = `auth=${data.accessToken}; path=/; max-age=86400`
 
       router.push("/")
 
