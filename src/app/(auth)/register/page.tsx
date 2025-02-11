@@ -68,12 +68,14 @@ export default function RegisterPage() {
   }
 
   async function handleSubmit(e: FormEvent) {
+    let idImage = null
     e.preventDefault()
 
     setApiError(null)
     setApiImageError(null)
 
     if(imageData) {
+      console.log("entrou pq tem imagem")
       try {
         const newFormData = new FormData()
         newFormData.append("files", imageData)
@@ -90,7 +92,7 @@ export default function RegisterPage() {
         const data = await response.json()
         console.log("sucessoooo")
         console.log(data.attachments[0].id)
-        setFormData({ ...formData, avatarId: data.attachments[0].id})       
+        idImage = data.attachments[0].id
 
       } catch (error: unknown) {
         console.log(error)
@@ -98,34 +100,44 @@ export default function RegisterPage() {
       }
     }
 
-    // const response = validate()
+    const response = validate()
     
-    // if (Object.keys(response).length > 0) {
-    //   setErrors(response)
-    //   return
-    // } 
+    if (Object.keys(response).length > 0) {
+      setErrors(response)
+      return
+    } 
       
-    // setErrors({})
+    setErrors({})
 
-    // try {
-    //   const response = await fetch("http://localhost:3333/sellers", {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify(formData),
-    //   })
+    try {
+      const newFormData = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        password: formData.password,
+        passwordConfirmation: formData.passwordConfirmation,
+        avatarId: idImage
+      }
 
-    //   if (!response.ok) {
-    //     throw new Error("Registro negado, revise as informações")
-    //   }
+      const response = await fetch("http://localhost:3333/sellers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newFormData),
+      })
 
-    //   const data = await response.json()
-    //   console.log(data)  
+      if (!response.ok) {
+        throw new Error("Registro negado, revise as informações")
+      }
 
-    //   router.push("/login")
+      const data = await response.json()
+      console.log(data)  
 
-    // } catch (error: unknown) {
-    //     setApiError(error instanceof Error ? error.message : "An error occurred during login.")
-    // }
+      // router.push("/login")
+
+    } catch (error: unknown) {
+      console.log(error)
+      setApiError(error instanceof Error ? error.message : "Erro de servidor")
+    }
   }
 
   return (
