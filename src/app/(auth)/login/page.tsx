@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   const [visible, setVisible] = useState(false)
 
-  const [formData, setFormData] = useState({ email: emailCookie && emailCookie, password: "" })
+  const [formData, setFormData] = useState({ email: emailCookie ? emailCookie : "", password: "" })
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [apiError, setApiError] = useState<string | null>(null)
 
