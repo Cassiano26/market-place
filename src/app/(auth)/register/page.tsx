@@ -130,9 +130,12 @@ export default function RegisterPage() {
       }
 
       const data = await response.json()
-      console.log(data)  
+      console.log(data)
 
-      // router.push("/login")
+      document.cookie = `market-place@avatarURL=${data.seller.avatar.url}; path=/; max-age=86400`
+      document.cookie = `market-place@name=${data.seller.name}; path=/; max-age=86400`
+
+      router.push("/login")
 
     } catch (error: unknown) {
       console.log(error)
