@@ -134,7 +134,7 @@ export default function RegisterPage() {
       console.log(data)
 
       document.cookie = `market-place@avatarURL=${data.seller.avatar.url}; path=/; max-age=86400`
-      document.cookie = `market-place@name=${data.seller.name}; path=/; max-age=86400`
+      document.cookie = `market-place@email=${data.seller.email}; path=/; max-age=86400`
 
       router.push("/login")
 

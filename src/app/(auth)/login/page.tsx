@@ -11,13 +11,16 @@ import AccessIcon from "@/components/icons/accessIcon"
 import ArrowRightIcon from "@/components/icons/arrowRightIcon"
 import { useRouter } from "next/navigation"
 
-
 export default function LoginPage() {
+  const emailCookie = document.cookie
+  .split("; ")
+  .find((cookie) => cookie.startsWith("market-place@email"))
+  ?.split("=")[1]
   const router = useRouter()
 
   const [visible, setVisible] = useState(false)
 
-  const [formData, setFormData] = useState({ email: "", password: "" })
+  const [formData, setFormData] = useState({ email: emailCookie && emailCookie, password: "" })
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [apiError, setApiError] = useState<string | null>(null)
 
@@ -97,7 +100,7 @@ export default function LoginPage() {
           <div className="flex flex-row gap-1 border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
             <MailIcon color="#949494" width={22} height={22}/>
             {/* <Image className="color-" alt='' src={mailIcon} width={22} height={19} /> */}
-            <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" name="email" id="email" placeholder="Seu e-mail cadastrado" />
+            <input value={formData.email} onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" name="email" id="email" placeholder="Seu e-mail cadastrado" />
           </div>
           <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.email}</span>
         </div>
