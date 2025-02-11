@@ -1,4 +1,5 @@
 'use client'
+
 import Image from "next/image"
 import uploadIcon from '@/assets/icon/image-upload.svg'
 
@@ -164,6 +165,7 @@ export default function RegisterPage() {
             <UserIcon color="#949494" width={22} height={22} />
             <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" id="name" placeholder="Seu nome completo" />
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.name}</span>
         </div>
 
         <div className="group">
@@ -174,6 +176,7 @@ export default function RegisterPage() {
               <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="tel" id="phone" placeholder="(00) 00000-0000" />
             </div>
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.phone}</span>
         </div>
 
         <span className="font-sans font-bold text-lg text-[#1D1D1D] mt-12">Acesso</span>
@@ -186,6 +189,7 @@ export default function RegisterPage() {
               <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" id="email" placeholder="Seu e-mail de acesso" />
             </div>
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.email}</span>
         </div>
 
         <div className="group">
@@ -199,6 +203,7 @@ export default function RegisterPage() {
               {visible ? <Image alt='' src={viewIcon} width={22} height={19} /> : <Image alt='' src={viewOffIcon} width={22} height={19} /> }
             </button>
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.password}</span>
         </div>
 
         <div className="group">
@@ -212,12 +217,15 @@ export default function RegisterPage() {
               {visible ? <Image alt='' src={viewIcon} width={22} height={19} /> : <Image alt='' src={viewOffIcon} width={22} height={19} /> }
             </button>
           </div>
+          <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{errors.passwordConfirmation}</span>
         </div>
 
         <button className="flex justify-between px-5 items-center mt-12 mb-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
           Cadastrar
           <ArrowRightIcon color="white" />
         </button>
+        <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{apiError}</span>
+        <span className="font-poppins font-normal text-[12px] text-[#DC3545]">{apiImageError}</span>
       </form>
 
       <div className="flex flex-col gap-5 mt-12">
