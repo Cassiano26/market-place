@@ -1,15 +1,133 @@
+'use client'
 import Image from "next/image"
 import uploadIcon from '@/assets/icon/image-upload.svg'
-import userIcon from '@/assets/icon/user.svg'
-import callIcon from '@/assets/icon/call.svg'
-import mailIcon from '@/assets/icon/mail-02.svg'
 
-import acessIcon from '@/assets/icon/access.svg'
-import arrowRight from '@/assets/icon/arrow-right-02.svg'
 import arrowRightRed from '@/assets/icon/arrow-right-02-red.svg'
 import viewIcon from '@/assets/icon/view.svg'
+import viewOffIcon from '@/assets/icon/view-off.svg'
 
-export default function registerPage() {
+import ArrowRightIcon from "@/components/icons/arrowRightIcon"
+import UserIcon from "@/components/icons/userIcon"
+import CallIcon from "@/components/icons/callIcon"
+import MailIcon from "@/components/icons/MailIcon"
+import AccessIcon from "@/components/icons/accessIcon"
+import { ChangeEvent, FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+
+export default function RegisterPage() {
+  const router = useRouter()
+  const [visible, setVisible] = useState(false)
+  const [formData, setFormData] = useState<{ name: string; phone: string; email: string; password: string; passwordConfirmation: string;  avatarId?: string }>({name: "", phone: "", email: "", password: "", passwordConfirmation: ""})
+  const [imageData, setImageData] = useState<File>()
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; email?: string; password?: string; passwordConfirmation?: string;  avatarId?: string }>({})
+  const [apiError, setApiError] = useState<string | null>("")
+  const [apiImageError, setApiImageError] = useState<string | null>(null)
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/
+  const atLeastSix = /^.{6,}$/
+  const brasilPhoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/
+
+  function handleVisiblePasswordButtonClick() {
+    setVisible((prev) => !prev)
+  }
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    if(e.target.id !== 'avatarId') {
+      console.log(e.target.id, e.target.value)
+      setFormData({ ...formData, [e.target.id]: e.target.value })       
+    }
+  }
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    if(e.target.id === 'avatarId') {
+      if(e.target.files) {
+        setImageData(e.target.files[0])
+      }
+    }
+  }
+
+  function validate() {
+    const newErrors: typeof errors = {}
+
+    if(!atLeastSix.test(formData.name))
+        newErrors.name = "O nome deve ter ao menos 6 caracteres"
+    
+    if(!brasilPhoneRegex.test(formData.phone)) 
+      newErrors.phone = "Formato inválido de telefone"
+    
+    if (!emailRegex.test(formData.email)) 
+      newErrors.email = "Formato inválido de email"
+    
+    if (!atLeastSix.test(formData.password))
+        newErrors.password = "A senha deve ter ao menos 6 caracteres"
+    
+    if (formData.password !== formData.passwordConfirmation)
+        newErrors.passwordConfirmation = "Senhas diferentes"
+
+    return newErrors
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+
+    setApiError(null)
+    setApiImageError(null)
+
+    if(imageData) {
+      try {
+        const newFormData = new FormData()
+        newFormData.append("files", imageData)
+
+        const response = await fetch("http://localhost:3333/attachments", {
+          method: "POST",
+          body: newFormData,
+        })
+
+        if (!response.ok) {
+          throw new Error("Registro de imagem negada, revise as informações")
+        }
+
+        const data = await response.json()
+        console.log("sucessoooo")
+        console.log(data.attachments[0].id)
+        setFormData({ ...formData, avatarId: data.attachments[0].id})       
+
+      } catch (error: unknown) {
+        console.log(error)
+        setApiImageError(error instanceof Error ? error.message : "Erro no servidor")
+      }
+    }
+
+    // const response = validate()
+    
+    // if (Object.keys(response).length > 0) {
+    //   setErrors(response)
+    //   return
+    // } 
+      
+    // setErrors({})
+
+    // try {
+    //   const response = await fetch("http://localhost:3333/sellers", {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(formData),
+    //   })
+
+    //   if (!response.ok) {
+    //     throw new Error("Registro negado, revise as informações")
+    //   }
+
+    //   const data = await response.json()
+    //   console.log(data)  
+
+    //   router.push("/login")
+
+    // } catch (error: unknown) {
+    //     setApiError(error instanceof Error ? error.message : "An error occurred during login.")
+    // }
+  }
+
   return (
     <div className="px-20 py-16 bg-white rounded-[32px] flex flex-col gap-12">
       <div>
@@ -18,59 +136,72 @@ export default function registerPage() {
           Informe os seus dados pessoais e de acesso
         </p>
       </div>
-      <form className="flex flex-col">
-        <h2 className="font-sans font-bold text-lg text-[#1D1D1D]">Perfil</h2>
-        
-        <input id="profile-image" type="file" accept="image/*" className="hidden" />
-        <label htmlFor="profile-image" className="flex items-center justify-center bg-background h-[7.5rem] w-[7.5rem] rounded-xl my-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <span className="font-sans font-bold text-lg text-[#1D1D1D]">Perfil</span>
+        <div className="relative flex items-center justify-center bg-background h-[7.5rem] w-[7.5rem] rounded-xl my-5">
+          <input onChange={handleFileChange} id="avatarId" type="file" accept="image/*" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
           <Image src={uploadIcon} alt=""/>
-        </label>
+        </div>
         
-        <label className="font-poppins font-medium text-xs/[120%] text-[#666666]" htmlFor="name-profile">NOME</label>
-        <div className="flex flex-row gap-1 border-b-[1px] px-[2px] py-[14px] border-inherit text-[#949494] font-poppins font-normal text-base/[120%]">
-          <Image className="" alt='' src={userIcon} width={22} height={19} />
-          <input className="placeholder-[#949494] focus:outline-none" type="email" id="name-profile" placeholder="Seu nome completo" />
-        </div>
-
-        <label className="font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="tel-profile">TELEFONE</label>
-        <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#949494] font-poppins font-normal text-base/[120%]">
-          <div className="flex flex-row gap-1">
-            <Image className="" alt='' src={callIcon} width={22} height={19} />
-            <input className="placeholder-[#949494] focus:outline-none" type="tel" name="" id="tel-profile" placeholder="(00) 00000-0000" />
+        <div className="group">
+          <label className="group-focus-within:text-[#F24D0D] font-poppins font-medium text-xs/[120%] text-[#666666]" htmlFor="name">NOME</label>
+          <div className="flex flex-row gap-1 border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
+            <UserIcon color="#949494" width={22} height={22} />
+            <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" id="name" placeholder="Seu nome completo" />
           </div>
         </div>
 
-        <h2 className="font-sans font-bold text-lg text-[#1D1D1D] mt-12">Acesso</h2>
-
-        <label className="font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="email-profile">E-MAIL</label>
-        <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#949494] font-poppins font-normal text-base/[120%]">
-          <div className="flex flex-row gap-1">
-            <Image className="" alt='' src={mailIcon} width={22} height={19} />
-            <input className="placeholder-[#949494] focus:outline-none" type="email" id="email-profile" placeholder="Seu e-mail de acesso" />
+        <div className="group">
+          <label className="group-focus-within:text-[#F24D0D] font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="phone">TELEFONE</label>
+          <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
+            <div className="flex flex-row gap-1">
+              <CallIcon color="#949494" width={22} height={22} />
+              <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="tel" id="phone" placeholder="(00) 00000-0000" />
+            </div>
           </div>
         </div>
 
-        <label className="font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="password-profile">SENHA</label>
-        <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#949494] font-poppins font-normal text-base/[120%]">
-          <div className="flex flex-row gap-1">
-            <Image className="" alt='' src={acessIcon} width={22} height={19} />
-            <input className="placeholder-[#949494] focus:outline-none" type="password" id="password-profile" placeholder="Senha de acesso" />
+        <span className="font-sans font-bold text-lg text-[#1D1D1D] mt-12">Acesso</span>
+
+        <div className="group">
+          <label className="group-focus-within:text-[#F24D0D] font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="email">E-MAIL</label>
+          <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
+            <div className="flex flex-row gap-1">
+              <MailIcon color="#949494" width={22} height={22} />
+              <input onChange={handleChange} className="caret-[#F24D0D] placeholder-[#949494] focus:outline-none" type="text" id="email" placeholder="Seu e-mail de acesso" />
+            </div>
           </div>
-          <Image alt='' src={viewIcon} width={22} height={19} />
         </div>
 
-        <label className="font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="confirm-password-profile">SENHA</label>
-        <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#949494] font-poppins font-normal text-base/[120%]">
-          <div className="flex flex-row gap-1">
-            <Image className="" alt='' src={acessIcon} width={22} height={19} />
-            <input className="placeholder-[#949494] focus:outline-none" type="password" id="confirm-password-profile" placeholder="Confirme a senha" />
+        <div className="group">
+          <label className="group-focus-within:text-[#F24D0D] font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="password">SENHA</label>
+          <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
+            <div className="flex flex-row gap-1">
+              <AccessIcon color="#949494" width={22} height={22} />
+              <input onChange={handleChange} className="placeholder-[#949494] focus:outline-none" type={visible ? "text" : "password"} id="password" placeholder="Senha de acesso" />
+            </div>
+            <button type="button" onClick={handleVisiblePasswordButtonClick}>
+              {visible ? <Image alt='' src={viewIcon} width={22} height={19} /> : <Image alt='' src={viewOffIcon} width={22} height={19} /> }
+            </button>
           </div>
-          <Image alt='' src={viewIcon} width={22} height={19} />
+        </div>
+
+        <div className="group">
+          <label className="group-focus-within:text-[#F24D0D] font-poppins font-medium text-xs/[120%] text-[#666666] pt-5" htmlFor="passwordConfirmation">SENHA</label>
+          <div className="flex flex-row justify-between border-b-[1px] px-[2px] py-[14px] border-inherit text-[#3D3D3D] font-poppins font-normal text-base/[120%]">
+            <div className="flex flex-row gap-1">
+            <AccessIcon color="#949494" width={22} height={22} />
+            <input onChange={handleChange} className="placeholder-[#949494] focus:outline-none" type={visible ? "text" : "password"} id="passwordConfirmation" placeholder="Confirme a senha" />
+            </div>
+            <button type="button" onClick={handleVisiblePasswordButtonClick}>
+              {visible ? <Image alt='' src={viewIcon} width={22} height={19} /> : <Image alt='' src={viewOffIcon} width={22} height={19} /> }
+            </button>
+          </div>
         </div>
 
         <button className="flex justify-between px-5 items-center mt-12 mb-12 bg-[#F24D0D] rounded-xl h-14 text-white font-poppins font-medium text-base" type="submit">
           Cadastrar
-          <Image className="" alt='' src={arrowRight} width={24} height={24} />
+          <ArrowRightIcon color="white" />
         </button>
       </form>
 
