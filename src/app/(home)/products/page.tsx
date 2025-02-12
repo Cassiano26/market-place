@@ -4,6 +4,7 @@ import Image from 'next/image'
 import SaleTagIcon from '@/components/icons/saleTagIcon'
 import SearchIcon from '@/components/icons/searchIcon'
 import { FormEvent, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type productType = {
   id: string,
@@ -36,6 +37,8 @@ type productType = {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<[productType] | null>(null)
+
+  const router = useRouter()
 
   useEffect(() => {
     async function productsData() {
@@ -114,7 +117,12 @@ export default function ProductsPage() {
           <div className="grid grid-cols-2 gap-4">
             {products && products.map(item => {
               return (
-                <div key={item.id} className="flex flex-col gap-1 p-1 bg-white w-[331px] h-[250px] rounded-[20px]">
+                <div 
+                  onClick={() => {
+                    router.push(`/products/${item.id}`)
+                  }}
+                  key={item.id} 
+                  className="cursor-pointer flex flex-col gap-1 p-1 bg-white w-[331px] h-[250px] rounded-[20px]">
                   <div className='relative w-[323px] h-[144px] overflow-hidden rounded-[16px]'>
                     <Image fill src={item.attachments[0].url} alt='' />
                   </div>
