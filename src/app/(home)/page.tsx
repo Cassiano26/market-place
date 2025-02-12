@@ -36,6 +36,8 @@ export default function DashboardPage() {
     viewsPerDay:[{date: '00', amount: 0}]
   })
 
+  const [dates, setDates] = useState<{firstDay: string, lastDay: string} | null>()
+
   const range = useRef<number[]>([])
 
   useEffect(() => {
@@ -80,16 +82,18 @@ export default function DashboardPage() {
       })
 
       const dataThree = await responseThree.json()
+
+      const firstDay = formatDate(dataThree.viewsPerDay[0].date)
+      const lastDay = formatDate(dataThree.viewsPerDay[dataThree.viewsPerDay.length - 1].date)
+
+      setDates({firstDay, lastDay})
+    
       const transformData = dataThree.viewsPerDay.map((entry: {date: string, amount: number}) => ({
         ...entry,
         date: (String(new Date(entry.date).getUTCDate()).padStart(2, "0")) 
       }))
 
-      console.log(transformData)
-
       const amountRange = getAmountRange(dataThree)
-
-      console.log(amountRange)
 
       range.current = amountRange
 
@@ -112,6 +116,11 @@ export default function DashboardPage() {
 
     return [minAmount, mid1, mid2, maxAmount]
   }
+
+  function formatDate(isoString: Date) {
+    const date = new Date(isoString);
+    return new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long' }).format(date);
+  };
 
   return (
     <div className="flex justify-center mt-16">
@@ -164,7 +173,7 @@ export default function DashboardPage() {
               <h4 className="font-sans font-bold text-[18px] text-[#1D1D1D]">Visitantes</h4>
               <h4 className="flex gap-2 items-center font-poppins font-normal text-[12px] text-[#666666] uppercase">
                 <Image src={calendarIcon} alt="calendar icon" width={16} height={16}/>
-                26 de junho - 25 de julho
+                {dates?.firstDay} - {dates?.lastDay}
               </h4>
             </div>
             <div className="w-[719px] h-[266px]">
