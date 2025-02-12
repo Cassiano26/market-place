@@ -62,7 +62,7 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="bg-[#F24D0D] text-white h-[40px] rounded-[10px] flex items-center gap-4 p-3 font-poppins font-medium text-sm">
+        <button onClick={() => router.push("/products/new_product")} className="bg-[#F24D0D] text-white h-[40px] rounded-[10px] flex items-center gap-4 p-3 font-poppins font-medium text-sm hover:bg-[#C43C08]">
           <Image src={plusIcon} alt=""width={20} />
           Novo produto
         </button>

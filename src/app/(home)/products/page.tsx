@@ -115,7 +115,7 @@ export default function ProductsPage() {
             {products && products.map(item => {
               return (
                 <div key={item.id} className="flex flex-col gap-1 p-1 bg-white w-[331px] h-[250px] rounded-[20px]">
-                  <div className='bg-red-700 relative w-[323px] h-[144px] overflow-hidden rounded-[16px]'>
+                  <div className='relative w-[323px] h-[144px] overflow-hidden rounded-[16px]'>
                     <Image fill src={item.attachments[0].url} alt='' />
                   </div>
                   <div className='px-[12px] pt-[12px] pb-[16px]'>
